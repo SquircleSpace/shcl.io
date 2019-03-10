@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Hey! Its SHCL!</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="#">SHCL</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#faq">Frequently Asked Questions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com/bradleyjensen/shcl">View On Github</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+
+      <div class="starter-template">
+        <h1>Shell + Lisp = &lt;3</h1>
+        <p>SHCL is a shell written in Common Lisp.  It tries to adhere to the POSIX standard as closely as it can.  Unlike those new-fangled shells, SHCL doesn't try to strap new features onto the POSIX Shell language to fix it.  SHCL isn't a whole new language.  Its just plain-old POSIX Shell.  That's right.  POSIX Shell, just like 'ma used to make it... but with a single, small tweak: you have the full power of Common Lisp at your disposal at all times.</p>
+        <p>Let's say... for some bizarre reason, you find yourself needing to compute e<sup>iθ</sup> in your shell.  Don't panic!  Common Lisp has excellent support for complex numbers!</p>
+        <pre>shcl> shcl-repl
+shcl (lisp)> (define-builtin euler (&required theta)
+> (let ((result (exp (complex 0 (read-from-string theta)))))
+>   (format t "~4F~4@Fi~%" (realpart result) (imagpart result)))
+> 0)
+EULER
+shcl (lisp)> ^D
+shcl> euler 3.1415926
+-1.0+0.0i</pre>
+        <p>Phew.  That was close.  Wait... oh no!  Due to a series of improbable events, you need to get the prime factorization of some number!  Never fear!  Common Lisp has a healthy community of packages you can call on!</p>
+        <pre>shcl> shcl-repl
+shcl (lisp)> (load "~/quicklisp/setup.lisp")
+T
+shcl (lisp)> (ql:quickload :cl-factoring)
+To load "cl-factoring":
+  Load 1 ASDF system:
+    cl-factoring; Loading "cl-factoring"
+
+(CL-FACTORING)
+shcl (lisp)> ^D
+shcl> echo ,(cl-factoring:factor 142)
+(2 71)</pre>
+        <p>Okay, yes, its extremely unlikely that you'd ever want to work with complex numbers or need to factor some numbers in a shell script.  Still, feature creep is a real thing.  One day your simple shell script might need to do something fancy like run queries against a Sqlite database or leverage an elaborate data structure like a bloom filter.  Usually, when that day comes, people will tell you to re-write your script in a "real" language.  With SHCL, your shell scripts can naturally grow and become full-fledged programs.  <b>You'll never need to re-write your shell scripts again!</b></p>
+        <h1 class="anchor" id="faq">Frequently asked questions</h1>
+        <p><b>Where can I download it?</b></p>
+        <p>SHCL isn't stable enough for general use, yet.  A lot of important features aren't done and it frequently drops into the debugger.  If you're feeling adventurous, you can grab the source and try building it yourself.</p>
+        <p><b>Why Common Lisp?  This actually could have been useful to me if you used &lt;other language&gt;.</b></p>
+        <p>Common Lisp's meta-programming facilities are second to none.  Very few languages give the programmer the tools necessary to create something like SHCL.  Sure, you can write a shell in any language, but SHCL's tight integration between POSIX Shell and Common Lisp is only possible with a language like Common Lisp.</p>
+        <p>Also, SHCL started out as an educational experiment in reader macros.  It was never intended to be useful... it just sort of happened.</p>
+        <p><b>Why not try to the shell language better, like &lt;other shell&gt;?</b></p>
+        <p>SHCL isn't trying to be a new shell language.  POSIX Shell is pretty close to the platonic ideal for simple process creation tasks.  POSIX Shell only starts to fail when you try to use it for other things.  Luckily, you don't need to use the shell language for everything!  If you need fancy features like local variables, associative arrays, or structured data you should use Common Lisp.  With SHCL, its trivial to expose a Common Lisp function to the shell.  Use POSIX Shell for the things its suited for, and use Common Lisp for the heavy lifting.</p>
+        <p><b>Does it have tab complete?</b></p>
+        <p>Its a work in progress, but yes!  Tab complete is a tricky proposition for SHCL.  SHCL is designed to allow new syntax to be defined at runtime.  You can change how the lexer or the parser works at any moment.  The completion engine needs to adapt to those changes without skipping a beat.  So, creating a tab complete engine for SHCL has proven to be pretty tricky.  At the moment, SHCL's tab complete is rudimentary, but it seems like the foundation is strong.  Expect to see massive improvements in this area in the future!</p>
+        <p><b>What's that about changing the syntax?</b></p>
+        <p>Common Lisp allows you to define new syntax.  It only felt right that SHCL should, too!  SHCL's parser uses PEG-style parser combinators, and every nonterminal and terminal in the grammar is represented using an "advisable" function (inspired by Emacs's advisable functions).  You can easily add extensions to the grammar at any level!  Similarly, most of the lexer's functionality is based on a generalization of Common Lisp's readtables.  If you want to, you can add new entries to the dispatch table or replace existing ones.  The sky's the limit!</p>
+        <p><b>Why?  WHYYYYYYYYYYYYY?!</b></p>
+        <p>For fun, of course!</p>
+        <p><b>How do you pronounce "SHCL"?</b></p>
+        <p>Pronounce it the same way you'd pronounce <a href="https://en.wikipedia.org/wiki/Shekel">Shekel</a>.<p>
+      </div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
